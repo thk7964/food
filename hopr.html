@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>김태호님의 자기소개</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: lightgray;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .main {
+            width: 80%;
+            height: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        .pfile {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .pf_img {
+            box-shadow: 0 0 10px rgba(80, 78, 78, 0.1);
+        }
+
+        .pf_img img {
+            width: 300px;
+            height: 300px;
+        }
+
+        .pf_info {
+            margin-left: 50px;
+        }
+
+        .commenttitle {
+            width: 100%;
+            display: flex;
+        }
+
+        textarea {
+
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border-width: 1px;
+            border-radius: 5px;
+            font-size: 1em;
+            resize: none;
+        }
+
+        .commenttitle>button {
+
+            width: 100px;
+            height: 50px;
+            background-color: rgb(111, 221, 111);
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            margin-left: auto;
+            margin-top: 5px;
+
+        }
+
+        input {
+            width: 200px;
+            height: 30px;
+            padding: 10px;
+            border-width: 1px;
+            border-radius: 5px;
+            font-size: 1em;
+            resize: none;
+        }
+
+        .commentlist {
+            margin-top: 30px;
+        }
+
+        .comments {
+            height: auto;
+            margin-top: 5px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .checkpw {
+            width: 100%;
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .checkpw>button {
+            background-color: rgb(111, 221, 111);
+            color: white;
+            border: 1px solid white;
+            border-radius: 5px;
+            width: 50px;
+            margin-left: 5px;
+        }
+
+        .commenttxtbox {
+            width: 100%;
+            border-width: 0 0 1px 0;
+            border-style: dotted;
+            margin-top: 10px;
+        }
+
+        .idpw {
+            margin-left: auto;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: rgb(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modalct {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+            text-align: center;
+            position: relative;
+        }
+        .navigator {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .nav-menu {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
+            font-size: 16px;
+        }
+        .site-name {
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            color: #90a159;
+        }
+    </style>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDocs, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAomoyZclzEJtKU_6Gd06T70Y7hE9NGLcg",
+            authDomain: "practice-edfcf.firebaseapp.com",
+            projectId: "practice-edfcf",
+            storageBucket: "practice-edfcf.firebasestorage.app",
+            messagingSenderId: "870745855047",
+            appId: "1:870745855047:web:f4e768c1efbc14e28f8d62",
+            measurementId: "G-MDKP04M7VW"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        $("#commentbtn").click(async function () {
+            let commenttxt = $('#commenttxt').val();
+            let commentpw = $('#commentpw').val();
+            
+            if (commenttxt !== "" && commentpw !== "") {
+                try {
+                    const docRef = await addDoc(collection(db, "profile"), {
+                        "commenttxt": commenttxt,
+                        "commentpw": commentpw
+                    });
+                    $('#commenttxt').val('');
+                    $('#commentpw').val('');
+                    location.reload(true);
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            }
+            else {
+                alert("댓글 또는 아이디가 작성되지 않았어요!");
+            }
+        });
+
+        $(".commentlist").empty();
+        const querySnapshot = await getDocs(collection(db, "profile"));
+
+        querySnapshot.forEach((doc) => {
+            let row = doc.data();
+            let docid = doc.id;
+            console.log(row);
+            console.log(docid);
+            let commenttxt = doc.data().commenttxt;
+            let commentpw = doc.data().commentpw;
+            let tempHtml = `
+                <div class="comments" >
+                    <div class="checkpw"id="${docid}">
+                        <button class="mdlbtn" id="modify ">수정</button>
+                        <button class="ctdelbtn" id="ctdel">삭제</button>
+                    </div>
+
+                    <div class="commenttxtbox">
+                        <h3>${commentpw}</h3>
+                        <h5>${commenttxt}</h5>
+                    </div>
+                </div>
+                `
+            $(".commentlist").append(tempHtml);
+        });
+
+        $('.commentlist').on('click','.ctdelbtn', async function () {
+            let docid = this.parentNode.id;
+
+            try {
+                await deleteDoc(doc(db, "profile", docid));
+                console.log("삭제완료");
+                location.reload(true);
+            } catch (e) {
+                console.error("Error adding document: ", e);
+            }
+        });
+       
+
+        $('.commentlist').on('click','.mdlbtn', async function () {
+            let docid = this.parentNode.id;
+            const docRef = doc(db, "profile", docid);
+            getDoc(docRef).then((docSnap) => {
+                let commenttxt = docSnap.data().commenttxt;
+                let commentpw = docSnap.data().commentpw;
+
+                $("#edtxt").val(commenttxt);
+                $("#svaebtn").click(async function () {
+                    let newcommenttxt = $("#edtxt").val();
+
+                    if (newcommenttxt != commenttxt) {
+                        try {
+                            await updateDoc(docRef,{
+                                "commenttxt" : newcommenttxt
+                            });
+                            alert("댓글이 수정되었습니다!");
+                            location.reload(true);
+                        } catch (e) {
+                            console.error("Error adding document: ", e);
+                        }
+                    }
+                    else{
+                        alert("수정된 내용이 없습니다.");
+                    }
+                });
+            });
+
+            $("#popup").css("display", "flex");
+
+            $("#closebtn").click(function () {
+                $("#popup").hide();
+            });
+            $("#popup").show();
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navigator">
+            <h5 class="site-name">
+                <a class="nav-menu" href="hopr.html"> << </a>
+            </h5>
+            <ul>
+                <li><a class="nav-menu" href="hopr.html">꒰১♥໒꒱</a></li>
+
+            </ul>
+        </nav>
+    <div class="main">
+        <div>
+        </div>
+        <div class="pfile">
+            <div class="pf_img">
+                <img src="a.jpg"  alt="프로필 이미지">
+            </div>
+            <div class="pf_info">
+                <h2>김태호</h2>
+                <p> 안녕하세요! 서울에 살고있는 96년생 김태호 입니다. </p>
+                <p>정보통신공학과 졸업 후 여러 일을 해보다가 다시 도전하고 싶어서 참여하게 되었어요</p>
+                <p>다들 잘부탁드립니다.</p>
+                <h5>TMI</h5>
+                <p>mbti : ISTP </p>
+                <p>취미 : 맛집 탐방하기!!! </p>
+            </div>
+            
+        </div>
+        
+        
+        <div class="gusestbook">
+            <h3>댓글 </h3>
+            <textarea id="commenttxt" placeholder="댓글을 작성하세요"></textarea>
+            <div class="commenttitle">
+                <input type="text" class="pw" id="commentpw" placeholder="아이디를 입력해주세요"  />
+                <button id="commentbtn">댓글 작성</button>
+            </div>
+            <div class="commentlist">
+            </div>
+        </div>
+        <div id="popup" class="modal">
+            <div class="modalct">
+                <h3>댓글 수정</h3>
+                <textarea id="edtxt" placeholder="댓글을 작성하세요"></textarea>
+                <button id="svaebtn">댓글 수정</button>
+                <button id="closebtn">닫기</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
